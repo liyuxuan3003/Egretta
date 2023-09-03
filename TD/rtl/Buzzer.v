@@ -17,11 +17,16 @@ module Buzzer
     output              AUD
 );
 
-`define FREQ 0
+`define BUZZ 0
 `define TIME 1
-`define OUTPUT 2
+`define OUTP 2
+`define LOOP 3
+`define GAPT 4
+`define STAT 5
 
-reg [31:0] mem [2:0];
+reg [31:0] mem [15:0];
+
+reg [31:0] memMIDI [127:0];
 
 reg [15:0] msCounter;
 
