@@ -28,4 +28,6 @@
 #define OLIVEDRAB 0x556B2F
 #define GOLD 0xFFD700
 
+#define WORD 4
+
 #endif

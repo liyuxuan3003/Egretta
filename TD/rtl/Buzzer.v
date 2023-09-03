@@ -17,7 +17,7 @@ module Buzzer
     output              AUD
 );
 
-`define BUZZ 0
+`define NOTE 0
 `define TIME 1
 `define OUTP 2
 `define LOOP 3

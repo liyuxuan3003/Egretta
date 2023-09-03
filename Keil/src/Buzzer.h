@@ -3,23 +3,36 @@
 
 #include <stdint.h>
 
+#include "GlobalDefine.h"
 #include "Peripheral.h"
 
 #define BUZ 0
 #define AUD 1
 
+#define MIDI_OFFSET 16*WORD
+
 typedef struct
 {
-    volatile uint32_t NOTE:4;
-    volatile uint32_t NOTE_NC:28;
+    volatile uint32_t NOTE;
     volatile uint32_t TIME;
-    volatile uint32_t OUTPUT:2;
-    volatile uint32_t OUTPUT_NC:30;
+    volatile uint32_t OUTP;
+    volatile uint32_t LOOP;
+    volatile uint32_t GAPT;
+    volatile uint32_t STAT;
 } BuzzerType;
 
+typedef struct 
+{
+    volatile uint16_t NOTE;
+    volatile uint16_t TIME;
+} MIDIType;
+
 #define BUZZER ((BuzzerType *)BUZZER_BASE)
+#define MIDI ((MIDIType *) BUZZER_BASE + MIDI_OFFSET)
 
 void BuzzerConfig();
+void BuzzerPlay(const uint16_t *note,const uint16_t *time,uint16_t len);
+void BuzzerPlaySetting(uint32_t loop,uint32_t gap);
 void BuzzerOutput(uint8_t note,uint32_t time);
 
 // #define T0 200
