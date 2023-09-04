@@ -17,22 +17,35 @@ module Buzzer
     output              AUD
 );
 
-`define NOTE 0
-`define TIME 1
+`define NOTE 0      // 已弃用
+`define TIME 1      // 已弃用
 `define OUTP 2
 `define LOOP 3
 `define GAPT 4
-`define STAT 5
+`define LENT 5
+`define STAT 6
 
-reg [31:0] mem [15:0];
+`define LEN_BUZZ 16 
+`define LEN_MIDI 48
 
-reg [31:0] memMIDI [127:0];
+`define MIDI_NOTE 31:24
+`define MIDI_VELO 23:16
+`define MIDI_TIME 15:0
+
+reg [31:0] mem [`LEN_BUZZ+`LEN_MIDI-1:0];
 
 reg [15:0] msCounter;
 
 reg [15:0] notePos;
+reg [15:0] noteTimeRemain;
 
-reg [15:0] tmCounter;
+reg [7:0] nowNote;
+reg [7:0] nowVelocity;
+
+
+// reg [15:0] notePos;
+
+// reg [15:0] tmCounter;
 
 always@(posedge clk or negedge rstn) 
 begin
@@ -41,89 +54,83 @@ begin
         mem[`NOTE] <= 0;
         mem[`TIME] <= 0;
         mem[`OUTP] <= 0;
+        mem[`LOOP] <= 0;
+        mem[`GAPT] <= 0;
+        mem[`LENT] <= 0;
+        mem[`STAT] <= 0;
         msCounter <= 0;
+        notePos <= 0;
+        noteTimeRemain <= 0;
     end
     else
-
     begin
-        if(addrIn[7:4]==0)
-        begin
-            if(sizeDecode[0]) mem[addrIn[3:0]][7:0]   <= dataIn[7:0];
-            if(sizeDecode[1]) mem[addrIn[3:0]][15:8]  <= dataIn[15:8];
-            if(sizeDecode[2]) mem[addrIn[3:0]][23:16] <= dataIn[23:16];
-            if(sizeDecode[3]) mem[addrIn[3:0]][31:24] <= dataIn[31:24];            
-        end
-        else
-        begin
-            if(sizeDecode[0]) memMIDI[addrIn-5'b10000][7:0]   <= dataIn[7:0];
-            if(sizeDecode[1]) memMIDI[addrIn-5'b10000][15:8]  <= dataIn[15:8];
-            if(sizeDecode[2]) memMIDI[addrIn-5'b10000][23:16] <= dataIn[23:16];
-            if(sizeDecode[3]) memMIDI[addrIn-5'b10000][31:24] <= dataIn[31:24];   
-        end
+        if(sizeDecode[0]) mem[addrIn[5:0]][7:0]   <= dataIn[7:0];
+        if(sizeDecode[1]) mem[addrIn[5:0]][15:8]  <= dataIn[15:8];
+        if(sizeDecode[2]) mem[addrIn[5:0]][23:16] <= dataIn[23:16];
+        if(sizeDecode[3]) mem[addrIn[5:0]][31:24] <= dataIn[31:24];
 
+        dataOut <= mem[addrOut[5:0]];
 
-
-        if(mem[`LOOP] & mem[`STAT])
-        begin
-            if(notePos != 128)
-            begin
-                if(tmCounter != 0)
-                begin
-                    msCounter <= msCounter + 1;
-                    if(msCounter == 50000)   //计时
-                    begin
-                        msCounter <= 0;
-                        tmCounter <= tmCounter - 1;
-                    end
-                    dataOut <= memMIDI[addrOut[1:0]];
-                end
-                else
-                begin
-                    notePos <= notePos + 1;  
-                    tmCounter <= memMIDI[notePos][31:16];
-                end
-                    
-            end
-            else
-                begin
-                    mem[`LOOP] <= mem[`LOOP] - 1;
-                    notePos <= 0;
-                    mem[`STAT] <= 0;
-                    tmCounter <= mem[`GAPT];
-                end
-        end
-        else if (~mem[`STAT])
-        begin
-            if(tmCounter != 0)
-                begin
-                    msCounter <= msCounter + 1;
-                    if(msCounter == 50000)   //计时
-                    begin
-                        msCounter <= 0;
-                        tmCounter <= tmCounter - 1;
-                    end
-                end
-        end
-
-
-
-        
-        /*if(mem[`TIME] != 0)
+        if(noteTimeRemain != 0)
         begin
             msCounter <= msCounter + 1;
             if(msCounter == 50000)
             begin
                 msCounter <= 0;
-                mem[`TIME] <= mem[`TIME] - 1;
+                noteTimeRemain <= noteTimeRemain - 1;
             end
-        end*/
+        end
+        else
+        begin
+            noteTimeRemain <= mem[`LEN_BUZZ + notePos][`MIDI_TIME];
+            nowNote <= mem[`LEN_BUZZ + notePos][`MIDI_NOTE];
+            nowVelocity <= mem[`LEN_BUZZ + notePos][`MIDI_VELO];
+            notePos <= notePos + 1;
+            if(notePos == mem[`LENT] - 1)
+                notePos <= 0;
+        end
 
+        // if(mem[`LOOP] & mem[`STAT])
+        // begin
+        //     if(notePos != 128)
+        //     begin
+        //         if(tmCounter != 0)
+        //         begin
+        //             msCounter <= msCounter + 1;
+        //             if(msCounter == 50000)   //计时
+        //             begin
+        //                 msCounter <= 0;
+        //                 tmCounter <= tmCounter - 1;
+        //             end
+        //         end
+        //         else
+        //         begin
+        //             notePos <= notePos + 1;  
+        //             tmCounter <= memMIDI[notePos][31:16];
+        //         end
+                    
+        //     end
+        //     else
+        //         begin
+        //             mem[`LOOP] <= mem[`LOOP] - 1;
+        //             notePos <= 0;
+        //             mem[`STAT] <= 0;
+        //             tmCounter <= mem[`GAPT];
+        //         end
+        // end
+        // else if (~mem[`STAT])
+        // begin
+        //     if(tmCounter != 0)
+        //         begin
+        //             msCounter <= msCounter + 1;
+        //             if(msCounter == 50000)   //计时
+        //             begin
+        //                 msCounter <= 0;
+        //                 tmCounter <= tmCounter - 1;
+        //             end
+        //         end
+        // end
 
-
-
-
-
-        dataOut <= mem[addrOut[1:0]]; 
     end
 end
 
@@ -146,27 +153,27 @@ end
 `define NUM(X) (`CLK_FRE/X)/2
 
 wire [31:0] clkNum =
-    (mem[`NOTE][3:0] == 4'd0)   ? 0 :
-    (mem[`NOTE][3:0] == 4'd1)   ? `NUM(`nC3) :
-    (mem[`NOTE][3:0] == 4'd2)   ? `NUM(`nD3) :
-    (mem[`NOTE][3:0] == 4'd3)   ? `NUM(`nE3) :
-    (mem[`NOTE][3:0] == 4'd4)   ? `NUM(`nF3) :
-    (mem[`NOTE][3:0] == 4'd5)   ? `NUM(`nG3) :
-    (mem[`NOTE][3:0] == 4'd6)   ? `NUM(`nA3) :
-    (mem[`NOTE][3:0] == 4'd7)   ? `NUM(`nB3) : 
-    (mem[`NOTE][3:0] == 4'd8)   ? `NUM(`nC4) :
-    (mem[`NOTE][3:0] == 4'd9)   ? `NUM(`nD4) :
-    (mem[`NOTE][3:0] == 4'd10)  ? `NUM(`nE4) :
-    (mem[`NOTE][3:0] == 4'd11)  ? `NUM(`nF4) :
-    (mem[`NOTE][3:0] == 4'd12)  ? `NUM(`nG4) :
-    (mem[`NOTE][3:0] == 4'd13)  ? `NUM(`nA4) :
-    (mem[`NOTE][3:0] == 4'd14)  ? `NUM(`nB4) : 0;
+    (nowNote == 4'd0)   ? 0 :
+    (nowNote == 4'd1)   ? `NUM(`nC3) :
+    (nowNote == 4'd2)   ? `NUM(`nD3) :
+    (nowNote == 4'd3)   ? `NUM(`nE3) :
+    (nowNote == 4'd4)   ? `NUM(`nF3) :
+    (nowNote == 4'd5)   ? `NUM(`nG3) :
+    (nowNote == 4'd6)   ? `NUM(`nA3) :
+    (nowNote == 4'd7)   ? `NUM(`nB3) : 
+    (nowNote == 4'd8)   ? `NUM(`nC4) :
+    (nowNote == 4'd9)   ? `NUM(`nD4) :
+    (nowNote == 4'd10)  ? `NUM(`nE4) :
+    (nowNote == 4'd11)  ? `NUM(`nF4) :
+    (nowNote == 4'd12)  ? `NUM(`nG4) :
+    (nowNote == 4'd13)  ? `NUM(`nA4) :
+    (nowNote == 4'd14)  ? `NUM(`nB4) : 0;
 
 reg [31:0] counter;
 always @(posedge clk) if(counter>=clkNum) counter<=0; else counter <= counter+1;
 
 reg speaker;
-always @(posedge clk) if(counter>=clkNum && mem[`TIME] != 0) speaker <= ~speaker;
+always @(posedge clk) if(counter>=clkNum && noteTimeRemain != 0) speaker <= ~speaker;
 
 assign BUZ = (mem[`OUTP][0]) ? speaker : 1'bz;
 assign AUD = (mem[`OUTP][1]) ? speaker : 1'bz;
