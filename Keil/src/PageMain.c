@@ -69,12 +69,16 @@ uint8_t PageMain()
     DIG[1].COD=2;
     DIG[0].COD=0;
 
-    uint16_t time[7]={100,200,100,200,100,200,100};
-    uint8_t  note[7]={1,2,3,4,5,6,7};
-    uint8_t  velocity[7]={1,1,1,1,1,1,1};
+    // uint16_t time[7]={2000,4000,6000,2000,2000,2000,2000};
+    // uint8_t  note[7]={7,12,5,4,3,2,1};
+    // uint8_t  velocity[7]={1,1,1,1,1,1,1};
 
-    BuzzerConfig();
-    BuzzerPlay(note,time,velocity,7,0,0);
+    // BuzzerConfig();
+    // BuzzerPlay(note,time,velocity,4,0,0);
+
+    BUZZER -> NOTE = 30;
+    BUZZER -> TIME = 43;
+    BUZZER -> LENT = 7;
 
     while(1)
     {
@@ -126,6 +130,11 @@ uint8_t PageMain()
 
         LCDPrintf(WHITE,MAIN_BG_COL,512-strlen(titleSub)/2*2*8,230,2,titleSub);
         LCDPrintf(WHITE,MAIN_BG_COL,512-strlen(title)/2*4*8,100,4,title);
+
+        LCDPrintf(WHITE,MAIN_BG_COL,100,100,1,"NOTE:%d",BUZZER -> NOTE);
+        LCDPrintf(WHITE,MAIN_BG_COL,100,200,1,"TIME:%d",BUZZER -> TIME);
+        LCDPrintf(WHITE,MAIN_BG_COL,100,300,1,"LENT:%d",BUZZER -> LENT);
+
         while(TIMER -> TIME < nowTime + FRAME) ;
     }
 }

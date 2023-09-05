@@ -52,16 +52,17 @@ begin
         mem[`OUTP] <= 0;
         mem[`LOOP] <= 0;
         mem[`GAPT] <= 0;
-        // mem[`LENT] <= 4;
         mem[`LENT] <= 0;
         mem[`STAT] <= 0;
         msCounter <= 0;
         notePos <= 0;
         noteTimeRemain <= 0;
-        // mem[`LEN_BUZZ+0] <= 32'h01_00_00FF;
-        // mem[`LEN_BUZZ+1] <= 32'h02_00_00FF;
-        // mem[`LEN_BUZZ+2] <= 32'h03_00_00FF;
-        // mem[`LEN_BUZZ+3] <= 32'h04_00_00FF;
+        // mem[`LEN_BUZZ+0] <= 32'h01_00_02FF;
+        // mem[`LEN_BUZZ+1] <= 32'h02_00_02FF;
+        // mem[`LEN_BUZZ+2] <= 32'h03_00_02FF;
+        // mem[`LEN_BUZZ+3] <= 32'h04_00_02FF;
+        // mem[`LEN_BUZZ+4] <= 32'h05_00_02FF;
+        // mem[`LEN_BUZZ+5] <= 32'h0A_00_02FF;
     end
     else
     begin
