@@ -69,12 +69,12 @@ uint8_t PageMain()
     DIG[1].COD=2;
     DIG[0].COD=0;
 
-    // uint16_t time[7]={100,200,100,200,100,200,100};
-    // uint8_t  note[7]={1,2,3,4,5,6,7};
-    // uint8_t  velocity[7]={1,1,1,1,1,1,1};
+    uint16_t time[7]={100,200,100,200,100,200,100};
+    uint8_t  note[7]={1,2,3,4,5,6,7};
+    uint8_t  velocity[7]={1,1,1,1,1,1,1};
 
-    // BuzzerConfig();
-    // BuzzerPlay(note,time,velocity,7,0,0);
+    BuzzerConfig();
+    BuzzerPlay(note,time,velocity,7,0,0);
 
     while(1)
     {

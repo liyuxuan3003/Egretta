@@ -30,10 +30,10 @@ typedef struct
 } MIDIType;
 
 #define BUZZER ((BuzzerType *)BUZZER_BASE)
-#define MIDI ((volatile uint32_t *) BUZZER_BASE + MIDI_OFFSET)
+#define MIDI ((MIDIType *) BUZZER_BASE + MIDI_OFFSET)
 
 void BuzzerConfig();
-void BuzzerPlay(const uint16_t *note,const uint16_t *time,const uint16_t *velocity,uint16_t len,uint32_t loop,uint32_t gap);
+void BuzzerPlay(const uint8_t *note,const uint16_t *time,const uint8_t *velocity,uint16_t len,uint32_t loop,uint32_t gap);
 
 void BuzzerOutput(uint8_t note,uint32_t time);
 

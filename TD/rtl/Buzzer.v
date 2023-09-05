@@ -43,10 +43,6 @@ reg [7:0] nowNote;
 reg [7:0] nowVelocity;
 
 
-// reg [15:0] notePos;
-
-// reg [15:0] tmCounter;
-
 always@(posedge clk or negedge rstn) 
 begin
     if(~rstn)
@@ -85,57 +81,15 @@ begin
                 noteTimeRemain <= noteTimeRemain - 1;
             end
         end
-        else
+        else if(mem[`LENT] != 0)
         begin
-            noteTimeRemain <= mem[`LEN_BUZZ + notePos][`MIDI_TIME];
-            nowNote <= mem[`LEN_BUZZ + notePos][`MIDI_NOTE];
-            nowVelocity <= mem[`LEN_BUZZ + notePos][`MIDI_VELO];
+            noteTimeRemain <= mem[`LEN_BUZZ + notePos[5:0]][`MIDI_TIME];
+            nowNote <= mem[`LEN_BUZZ + notePos[5:0]][`MIDI_NOTE];
+            nowVelocity <= mem[`LEN_BUZZ + notePos[5:0]][`MIDI_VELO];
             notePos <= notePos + 1;
-            if(notePos == mem[`LENT] - 1)
+            if(notePos == mem[`LENT])
                 notePos <= 0;
         end
-
-        // if(mem[`LOOP] & mem[`STAT])
-        // begin
-        //     if(notePos != 128)
-        //     begin
-        //         if(tmCounter != 0)
-        //         begin
-        //             msCounter <= msCounter + 1;
-        //             if(msCounter == 50000)   //计时
-        //             begin
-        //                 msCounter <= 0;
-        //                 tmCounter <= tmCounter - 1;
-        //             end
-        //         end
-        //         else
-        //         begin
-        //             notePos <= notePos + 1;  
-        //             tmCounter <= memMIDI[notePos][31:16];
-        //         end
-                    
-        //     end
-        //     else
-        //         begin
-        //             mem[`LOOP] <= mem[`LOOP] - 1;
-        //             notePos <= 0;
-        //             mem[`STAT] <= 0;
-        //             tmCounter <= mem[`GAPT];
-        //         end
-        // end
-        // else if (~mem[`STAT])
-        // begin
-        //     if(tmCounter != 0)
-        //         begin
-        //             msCounter <= msCounter + 1;
-        //             if(msCounter == 50000)   //计时
-        //             begin
-        //                 msCounter <= 0;
-        //                 tmCounter <= tmCounter - 1;
-        //             end
-        //         end
-        // end
-
     end
 end
 
