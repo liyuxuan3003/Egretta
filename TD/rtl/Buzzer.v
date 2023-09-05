@@ -174,7 +174,8 @@ wire [31:0] clkNum =
     (nowNote == 4'd13)  ? `NUM(`nA4) :
     (nowNote == 4'd14)  ? `NUM(`nB4) : 0;
 
-reg [31:0] counter;
+reg [31:0] counter ;
+
 always @(posedge clk) if(counter>=clkNum) counter<=0; else counter <= counter+1;
 
 reg speaker;
