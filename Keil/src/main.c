@@ -52,6 +52,9 @@ int main()
     WaitRamReady();
     LCDBackground(0xFFFFFF);
 
+    printf("Test\n");
+
+
     uint8_t status=PAGE_MAIN;
     while(1)
     {

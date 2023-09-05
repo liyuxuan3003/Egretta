@@ -18,21 +18,23 @@ typedef struct
     volatile uint32_t OUTP;
     volatile uint32_t LOOP;
     volatile uint32_t GAPT;
+    volatile uint32_t LENT;
     volatile uint32_t STAT;
 } BuzzerType;
 
 typedef struct 
 {
-    volatile uint16_t NOTE;
-    volatile uint16_t TIME;
+    volatile uint32_t TIME:16;
+    volatile uint32_t VELO:8;
+    volatile uint32_t NOTE:8;
 } MIDIType;
 
 #define BUZZER ((BuzzerType *)BUZZER_BASE)
-#define MIDI ((MIDIType *) BUZZER_BASE + MIDI_OFFSET)
+#define MIDI ((volatile uint32_t *) BUZZER_BASE + MIDI_OFFSET)
 
 void BuzzerConfig();
-void BuzzerPlay(const uint16_t *note,const uint16_t *time,uint16_t len);
-void BuzzerPlaySetting(uint32_t loop,uint32_t gap);
+void BuzzerPlay(const uint16_t *note,const uint16_t *time,const uint16_t *velocity,uint16_t len,uint32_t loop,uint32_t gap);
+
 void BuzzerOutput(uint8_t note,uint32_t time);
 
 // #define T0 200

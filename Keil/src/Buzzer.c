@@ -14,26 +14,24 @@ void BuzzerConfig()
     return;
 }
 
+void BuzzerPlay(const uint16_t *note,const uint16_t *time,const uint16_t *velocity,uint16_t len,uint32_t loop,uint32_t gap)
+{
+    for(uint32_t i=0; i<len; i++)
+    {
+        MIDI[i]=time[i]+(velocity[i]<<16)+(note[i]<<24);
+        // MIDI[i].NOTE=note[i];
+        // MIDI[i].TIME=time[i];
+        // MIDI[i].VELO=velocity[i];
+    }
+    BUZZER->LENT=len;
+    BUZZER->LOOP=loop;
+    BUZZER->GAPT=gap;
+    return;
+}
+
 void BuzzerOutput(uint8_t note,uint32_t time)
 {
     BUZZER->NOTE=note;
     BUZZER->TIME=time;
-    return;
-}
-
-void BuzzerPlay(const uint16_t *note,const uint16_t *time,uint16_t len)
-{
-    for(uint32_t i=0; i<len; i++)
-    {
-        MIDI[i].NOTE=note[i];
-        MIDI[i].TIME=time[i];
-    }
-    return;
-}
-
-void BuzzerPlaySetting(uint32_t loop,uint32_t gap)
-{
-    BUZZER->LOOP = loop;
-    BUZZER->GAPT = gap;
     return;
 }

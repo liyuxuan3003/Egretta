@@ -57,7 +57,7 @@ uint8_t PageMain()
 {
     uint32_t nowTime;
     uint16_t x=0;
-    BUZZER -> NOTE = 0;
+
     for(uint8_t i=0;i<4;i++)
     {
         DIG[i].ENA = 1;
@@ -68,6 +68,13 @@ uint8_t PageMain()
     DIG[2].COD=5;
     DIG[1].COD=2;
     DIG[0].COD=0;
+
+    // uint16_t time[7]={100,200,100,200,100,200,100};
+    // uint8_t  note[7]={1,2,3,4,5,6,7};
+    // uint8_t  velocity[7]={1,1,1,1,1,1,1};
+
+    // BuzzerConfig();
+    // BuzzerPlay(note,time,velocity,7,0,0);
 
     while(1)
     {
@@ -92,10 +99,8 @@ uint8_t PageMain()
         //     case 0x0F: break;
         //     default: break;
         // }
-        
-        BuzzerConfig();
 
-        BGMPageMain();
+        // BGMPageMain();
 
         x++;
         if(x>=4)
@@ -103,9 +108,9 @@ uint8_t PageMain()
 
         PingPong();
         LCDBackground(MAIN_BG_COL);
-        Cloud(120,320,1,57);
-        Cloud(600,50,0,30);
-        Cloud(850,270,-1,30);
+        // Cloud(120,320,1,57);
+        // Cloud(600,50,0,30);
+        // Cloud(850,270,-1,30);
         for (uint32_t i=0;i<=17;i++)
         {
             for (uint32_t j=0;j<=4;j++)
