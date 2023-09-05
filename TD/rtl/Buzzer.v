@@ -111,31 +111,36 @@ end
 
 `define NUM(X) (`CLK_FRE/X)/2
 
-wire [31:0] clkNum =
-    (nowNote == 4'd0)   ? 0 :
-    (nowNote == 4'd1)   ? `NUM(`nC3) :
-    (nowNote == 4'd2)   ? `NUM(`nD3) :
-    (nowNote == 4'd3)   ? `NUM(`nE3) :
-    (nowNote == 4'd4)   ? `NUM(`nF3) :
-    (nowNote == 4'd5)   ? `NUM(`nG3) :
-    (nowNote == 4'd6)   ? `NUM(`nA3) :
-    (nowNote == 4'd7)   ? `NUM(`nB3) : 
-    (nowNote == 4'd8)   ? `NUM(`nC4) :
-    (nowNote == 4'd9)   ? `NUM(`nD4) :
-    (nowNote == 4'd10)  ? `NUM(`nE4) :
-    (nowNote == 4'd11)  ? `NUM(`nF4) :
-    (nowNote == 4'd12)  ? `NUM(`nG4) :
-    (nowNote == 4'd13)  ? `NUM(`nA4) :
-    (nowNote == 4'd14)  ? `NUM(`nB4) : 0;
+wire [31:0] clkNum = `NUM(`nC3);
+
+// wire [31:0] clkNum =
+//     (nowNote == 4'd0)   ? 0 :
+//     (nowNote == 4'd1)   ? `NUM(`nC3) :
+//     (nowNote == 4'd2)   ? `NUM(`nD3) :
+//     (nowNote == 4'd3)   ? `NUM(`nE3) :
+//     (nowNote == 4'd4)   ? `NUM(`nF3) :
+//     (nowNote == 4'd5)   ? `NUM(`nG3) :
+//     (nowNote == 4'd6)   ? `NUM(`nA3) :
+//     (nowNote == 4'd7)   ? `NUM(`nB3) : 
+//     (nowNote == 4'd8)   ? `NUM(`nC4) :
+//     (nowNote == 4'd9)   ? `NUM(`nD4) :
+//     (nowNote == 4'd10)  ? `NUM(`nE4) :
+//     (nowNote == 4'd11)  ? `NUM(`nF4) :
+//     (nowNote == 4'd12)  ? `NUM(`nG4) :
+//     (nowNote == 4'd13)  ? `NUM(`nA4) :
+//     (nowNote == 4'd14)  ? `NUM(`nB4) : 0;
 
 reg [31:0] counter ;
-
 always @(posedge clk) if(counter>=clkNum) counter<=0; else counter <= counter+1;
 
 reg speaker;
-always @(posedge clk) if(counter>=clkNum && noteTimeRemain != 0) speaker <= ~speaker;
+always @(posedge clk) if(counter>=clkNum) speaker <= ~speaker;
+// always @(posedge clk) if(counter>=clkNum && noteTimeRemain != 0) speaker <= ~speaker;
 
-assign BUZ = (mem[`OUTP][0]) ? speaker : 1'bz;
-assign AUD = (mem[`OUTP][1]) ? speaker : 1'bz;
+assign BUZ = speaker;
+assign AUD = speaker;
+
+// assign BUZ = (mem[`OUTP][0]) ? speaker : 1'bz;
+// assign AUD = (mem[`OUTP][1]) ? speaker : 1'bz;
 
 endmodule
